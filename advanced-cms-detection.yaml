@@ -1,0 +1,98 @@
+id: advanced-cms-detection
+
+info:
+  name: Advanced CMS Detection
+  author: Deepak
+  severity: info
+  description: Detects major CMS platforms using headers, meta tags, JS files, APIs, and common paths
+  tags: cms, tech, fingerprint, detect
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+      - "{{BaseURL}}/robots.txt"
+      - "{{BaseURL}}/README.md"
+      - "{{BaseURL}}/wp-login.php"
+      - "{{BaseURL}}/administrator/"
+      - "{{BaseURL}}/user/login"
+      - "{{BaseURL}}/api"
+
+    matchers-condition: or
+    matchers:
+
+      # WordPress
+      - type: regex
+        name: wordpress
+        part: body
+        regex:
+          - 'wp-content'
+          - 'wp-includes'
+          - 'wordpress'
+
+      # Drupal
+      - type: regex
+        name: drupal
+        part: body
+        regex:
+          - 'Drupal.settings'
+          - 'sites/default'
+          - 'drupal.js'
+
+      # Joomla
+      - type: regex
+        name: joomla
+        part: body
+        regex:
+          - 'Joomla!'
+          - 'com_content'
+          - 'index.php\?option='
+
+      # Magento
+      - type: regex
+        name: magento
+        part: body
+        regex:
+          - 'Magento'
+          - 'mage\/cookies'
+          - 'static\/version'
+
+      # Ghost CMS
+      - type: regex
+        name: ghost
+        part: body
+        regex:
+          - 'ghost.io'
+          - 'data-ghost'
+          - 'ghost-theme'
+
+      # TYPO3
+      - type: regex
+        name: typo3
+        part: body
+        regex:
+          - 'TYPO3'
+          - 'typo3temp'
+          - 'typo3conf'
+
+      # Headless CMS
+      - type: regex
+        name: strapi
+        part: body
+        regex:
+          - 'strapi'
+          - '/admin/init'
+
+      - type: regex
+        name: contentful
+        part: body
+        regex:
+          - 'contentful'
+          - 'cdn.contentful.com'
+
+      # Headers
+      - type: regex
+        name: cms-header
+        part: header
+        regex:
+          - 'X-Powered-By:.*(WordPress|Drupal|Joomla|Magento|Ghost|Strapi)'
